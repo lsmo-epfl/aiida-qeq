@@ -18,9 +18,6 @@
         ],
         "aiida.parsers": [
             "qeq.eqeq = aiida_qeq.parsers:EQeqParser"
-        ],
-        "aiida.cmdline.data": [
-            "qeq.eqeq = aiida_qeq.data.data_cli:cli"
         ]
     },
     "setup_requires": ["reentry"],
