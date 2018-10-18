@@ -18,8 +18,15 @@ install:
 - pip install -e .[testing,docs,pre-commit]
 - reentry scan -r aiida
 - pip install coveralls
+# add fake eqeq executable
+- cat "#!/bin/bash\necho 'eqeq'" > eqeq; chmod +x eqeq
+
+before_install:
+  - cp -R /usr/local/android-sdk-23.0.2 ./android-sdk
 
 env:
+  global:
+  - PATH=${PATH}:${TRAVIS_BUILD_DIR}
   matrix:
   - TEST_AIIDA_BACKEND: django
     TEST_TYPE: tests
