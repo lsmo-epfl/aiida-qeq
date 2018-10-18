@@ -6,8 +6,6 @@ Register parsers via the "aiida.parsers" entry point in setup.json.
 """
 from __future__ import absolute_import
 
-from six.moves import zip
-
 from aiida.parsers.parser import Parser
 from aiida.parsers.exceptions import OutputParsingError
 
@@ -44,7 +42,10 @@ class EQeqParser(Parser):
           * ``node_list``: list of new nodes to be stored in the db
             (as a list of tuples ``(link_name, node)``)
         """
-        from aiida.orm.data.singlefile import SinglefileData
+        from aiida.orm import DataFactory
+        SinglefileData = DataFactory('singlefile')
+        CifData = DataFactory('cif')
+
         success = False
         node_list = []
 
@@ -57,8 +58,9 @@ class EQeqParser(Parser):
 
         # Check the folder content is as expected
         list_of_files = out_folder.get_folder_list()
-        output_files = [self._calc._OUTPUT_FILE_NAME]
-        output_links = ['qeq']
+        output_dict = self._calc.inp.parameters.output_files_dict(
+            self._calc.inp.structure.filename)
+        output_files = list(output_dict.values())
         # Note: set(A) <= set(B) checks whether A is a subset
         if set(output_files) <= set(list_of_files):
             pass
@@ -66,11 +68,21 @@ class EQeqParser(Parser):
             self.logger.error("Not all expected output files {} were found".
                               format(output_files))
 
-        # Use something like this to loop over multiple output files
-        for fname, link in zip(output_files, output_links):
+        for ext in output_dict.keys():
+            fname = output_dict[ext]
+            if ext == 'cif':
+                # add cif file
+                cif = CifData(
+                    file=out_folder.get_abs_path(fname), parse_policy='lazy')
+                # Note: we might want to either contribute this attribute upstream
+                # or set up our own CifData class
+                cif._set_attr('partial_charge_method', 'eqeq')
+                node_list.append(('structure_with_charges', cif))
 
-            node = SinglefileData(file=out_folder.get_abs_path(fname))
-            node_list.append((link, node))
+            else:
+                # add as singlefile
+                node = SinglefileData(file=out_folder.get_abs_path(fname))
+                node_list.append(('{}_with_charges'.format(ext), node))
 
         success = True
         return success, node_list

@@ -13,7 +13,7 @@ TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_COMPUTER = 'localhost-test'
 
 executables = {
-    'qeq.eqeq': 'diff',
+    'qeq.eqeq': 'eqeq',
 }
 
 
