@@ -32,11 +32,6 @@ verdi run submit.py        # submit test calculation
 verdi calculation list -a  # check status of calculation
 ```
 
-If you have already set up your own aiida_qeq code using `verdi code setup`, you may want to try the following command:
-```
-qeq-submit  # uses aiida_qeq.cli
-```
-
 ## Tests
 
 The following will discover and run all unit test:

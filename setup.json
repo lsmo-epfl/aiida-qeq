@@ -21,9 +21,6 @@
         ],
         "aiida.cmdline.data": [
             "qeq.eqeq = aiida_qeq.data.data_cli:cli"
-        ],
-        "console_scripts": [
-            "qeq-submit=aiida_qeq.cli:submit"
         ]
     },
     "setup_requires": ["reentry"],
