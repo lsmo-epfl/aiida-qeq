@@ -18,8 +18,9 @@ install:
 - pip install -e .[testing,docs,pre-commit]
 - reentry scan -r aiida
 - pip install coveralls
-# add fake eqeq executable
+# add fake eqeq & egulp executables
 - cat "#!/bin/bash\necho 'eqeq'" > eqeq; chmod +x eqeq
+- cat "#!/bin/bash\necho 'egulp'" > egulp; chmod +x egulp
 
 env:
   global:
