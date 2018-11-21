@@ -28,7 +28,8 @@ A quick demo of how to submit a calculation:
 ```shell
 verdi daemon start         # make sure the daemon is running
 cd examples
-verdi run submit.py        # submit test calculation
+verdi run submit_qeq.py    # submit qeq test calculation
+verdi run submit_eqeq.py   # submit eqeq test calculation
 verdi calculation list -a  # check status of calculation
 ```
 
