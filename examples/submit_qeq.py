@@ -9,9 +9,9 @@ from __future__ import absolute_import
 from __future__ import print_function
 import os
 import aiida_qeq.tests as tests
-import aiida_qeq.data as data
-from aiida.orm import DataFactory
+import aiida_qeq.data.qeq as data
 from aiida_qeq.data import DATA_DIR
+from aiida.orm import DataFactory
 
 # make sure the "eqeq" binary is in your PATH
 code = tests.get_code(entry_point='qeq.qeq')
