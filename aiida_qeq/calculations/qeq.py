@@ -14,7 +14,7 @@ from aiida.common.exceptions import (InputValidationError, ValidationError)
 from aiida.common.datastructures import (CalcInfo, CodeInfo)
 from aiida.orm import DataFactory
 
-QeqParameters = DataFactory('qeq.eqeq')
+QeqParameters = DataFactory('qeq.qeq')
 CifData = DataFactory('cif')
 
 
@@ -32,7 +32,7 @@ class QeqCalculation(JobCalculation):
         # reuse base class function
         super(QeqCalculation, self)._init_internal_params()
 
-        # qeq.eqeq entry point defined in setup.json
+        # qeq.qeq entry point defined in setup.json
         self._default_parser = 'qeq.qeq'
 
     @classproperty
@@ -152,7 +152,7 @@ class QeqCalculation(JobCalculation):
             [configure_path, DEFAULT_CONFIGURE_FILE_NAME],
         ]
         calcinfo.remote_copy_list = []
-        calcinfo.retrieve_list = parameters.output_files
+        calcinfo.retrieve_list = configure.output_files
         calcinfo.codes_info = [codeinfo]
 
         return calcinfo

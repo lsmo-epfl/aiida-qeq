@@ -16,15 +16,15 @@ class TestEqeq(PluginTestCase):
 
     def test_submit(self):  # pylint: disable=too-many-locals
         """Test submitting a calculation"""
-        from aiida.orm.data.singlefile import SinglefileData
-        from aiida.orm.data.cif import CifData
+        from aiida.orm import DataFactory
         from aiida_qeq.data import DATA_DIR
         import aiida_qeq.data.eqeq as data
 
         code = self.code
+        CifData = DataFactory('cif')
+        SinglefileData = DataFactory('singlefile')
 
         # Prepare input parameters
-        from aiida.orm import DataFactory
         EQeqParameters = DataFactory('qeq.eqeq')
         parameters = EQeqParameters({'method': 'ewald'})
 
@@ -66,11 +66,12 @@ class TestQeq(PluginTestCase):
 
     def test_submit(self):  # pylint: disable=too-many-locals
         """Test submitting a calculation"""
-        from aiida.orm.data.singlefile import SinglefileData
-        from aiida.orm.data.cif import CifData
+        from aiida.orm import DataFactory
         from aiida_qeq.data import DATA_DIR
         import aiida_qeq.data.qeq as data
 
+        CifData = DataFactory('cif')
+        SinglefileData = DataFactory('singlefile')
         code = self.code
 
         parameter_file = SinglefileData(

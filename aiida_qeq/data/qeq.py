@@ -76,6 +76,8 @@ class QeqParameters(ParameterData):
             super(QeqParameters, self).__init__(**kwargs)
         else:
             # validate dictionary
+            if dict is None:
+                dict = {}
             dict = self.validate(dict)
             super(QeqParameters, self).__init__(dict=dict, **kwargs)
 
