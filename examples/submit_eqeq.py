@@ -9,7 +9,8 @@ from __future__ import absolute_import
 from __future__ import print_function
 import os
 import aiida_qeq.tests as tests
-import aiida_qeq.data as data
+import aiida_qeq.data.eqeq as data
+from aiida_qeq.data import DATA_DIR
 from aiida.orm import DataFactory
 
 # make sure the "eqeq" binary is in your PATH
@@ -21,9 +22,9 @@ parameters = EQeqParameters({'method': 'ewald'})
 
 SinglefileData = DataFactory('singlefile')
 charge_file = SinglefileData(
-    file=os.path.join(data.DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
+    file=os.path.join(DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
 ionization_file = SinglefileData(
-    file=os.path.join(data.DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
+    file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
 
 CifData = DataFactory('cif')
 cif = CifData(
@@ -33,7 +34,7 @@ cif = CifData(
 calc = code.new_calc()
 calc.label = "aiida_qeq test"
 calc.description = "Test job submission with the aiida_qeq plugin"
-calc.set_max_wallclock_seconds(60)
+calc.set_max_wallclock_seconds(10 * 60)
 calc.set_withmpi(False)
 calc.set_resources({"num_machines": 1, "num_mpiprocs_per_machine": 1})
 
