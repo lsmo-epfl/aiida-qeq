@@ -20,7 +20,7 @@ code = tests.get_code(entry_point='qeq.qeq')
 CifData = DataFactory('cif')
 SinglefileData = DataFactory('singlefile')
 
-configure = data.QeqParameters()
+#configure = data.QeqParameters()
 
 parameter_file = SinglefileData(
     file=os.path.join(DATA_DIR, data.DEFAULT_PARAM_FILE_NAME))
@@ -38,7 +38,7 @@ calc.set_resources({"num_machines": 1, "num_mpiprocs_per_machine": 1})
 
 calc.use_parameters(parameter_file)
 calc.use_structure(cif)
-calc.use_configure(configure)
+#calc.use_configure(configure)
 
 calc.store_all()
 

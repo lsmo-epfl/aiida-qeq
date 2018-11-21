@@ -9,9 +9,6 @@ from __future__ import absolute_import
 from aiida.parsers.parser import Parser
 from aiida.parsers.exceptions import OutputParsingError
 
-from aiida.orm import CalculationFactory
-QeqCalculation = CalculationFactory('qeq.qeq')
-
 
 class QeqParser(Parser):
     """
@@ -25,6 +22,8 @@ class QeqParser(Parser):
         super(QeqParser, self).__init__(calculation)
 
         # check for valid input
+        from aiida.orm import CalculationFactory
+        QeqCalculation = CalculationFactory('qeq.qeq')
         if not isinstance(calculation, QeqCalculation):
             raise OutputParsingError("Can only parse QeqCalculation")
 
@@ -56,7 +55,13 @@ class QeqParser(Parser):
 
         # Check the folder content is as expected
         list_of_files = out_folder.get_folder_list()
-        output_files = self._calc.inp.configure.output_files
+
+        if hasattr(self._calc.inp, 'configure'):
+            output_files = self._calc.inp.configure.output_files
+        else:
+            QeqParameters = DataFactory('qeq.qeq')
+            output_files = QeqParameters().output_files
+
         # Note: set(A) <= set(B) checks whether A is a subset
         if set(output_files) <= set(list_of_files):
             pass
