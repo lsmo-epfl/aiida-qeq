@@ -5,7 +5,6 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import aiida_qeq.tests as tests
-#import aiida_qeq.data as data
 from aiida.utils.fixtures import PluginTestCase
 import os
 
@@ -19,7 +18,8 @@ class TestEqeq(PluginTestCase):
         """Test submitting a calculation"""
         from aiida.orm.data.singlefile import SinglefileData
         from aiida.orm.data.cif import CifData
-        import aiida_qeq.data as data
+        from aiida_qeq.data import DATA_DIR
+        import aiida_qeq.data.eqeq as data
 
         code = self.code
 
@@ -29,10 +29,9 @@ class TestEqeq(PluginTestCase):
         parameters = EQeqParameters({'method': 'ewald'})
 
         charge_file = SinglefileData(
-            file=os.path.join(data.DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
+            file=os.path.join(DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
         ionization_file = SinglefileData(
-            file=os.path.join(data.DATA_DIR, data.
-                              DEFAULT_IONIZATION_FILE_NAME))
+            file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
         cif = CifData(
             file=os.path.join(tests.TEST_DIR, 'HKUST1.cif'),
             parse_policy='lazy')
