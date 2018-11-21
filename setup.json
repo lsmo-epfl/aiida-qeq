@@ -8,7 +8,7 @@
     "classifiers": [
         "Programming Language :: Python"
     ],
-    "version": "0.1.0a0",
+    "version": "0.1.0",
     "entry_points": {
         "aiida.data": [
             "qeq.eqeq = aiida_qeq.data.eqeq:EQeqParameters",
