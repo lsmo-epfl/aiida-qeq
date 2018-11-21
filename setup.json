@@ -15,8 +15,8 @@
             "qeq.qeq = aiida_qeq.data.qeq:QeqParameters"
         ],
         "aiida.calculations": [
-            "qeq.eqeq = aiida_qeq.calculations:EQeqCalculation",
-            "qeq.qeq = aiida_qeq.calculations:QeqCalculation"
+            "qeq.eqeq = aiida_qeq.calculations.eqeq:EQeqCalculation",
+            "qeq.qeq = aiida_qeq.calculations.qeq:QeqCalculation"
         ],
         "aiida.parsers": [
             "qeq.eqeq = aiida_qeq.parsers:EQeqParser",

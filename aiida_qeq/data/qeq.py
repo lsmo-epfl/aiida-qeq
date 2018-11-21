@@ -102,13 +102,16 @@ class QeqParameters(ParameterData):
 
         return [str(p) for p in parameters]
 
+    @property
     def output_files(self):
         """Returns list of expected output files.
         
         :param structure_file_name: Name of input structure (cif format)
         """
-        return ALL_OUTPUT_FILES
+        pm_dict = self.get_dict()
+        return pm_dict["retrieve"]
 
+    @property
     def configure_string(self):
         """Create configure.input string from dictionary.
 

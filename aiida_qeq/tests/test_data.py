@@ -63,6 +63,4 @@ point_charges_present 0
 include_pceq 0
 imethod 0"""
 
-        print((p.configure_string()))
-        print(expected_string)
-        self.assertEqual(p.configure_string(), expected_string)
+        self.assertEqual(p.configure_string, expected_string)

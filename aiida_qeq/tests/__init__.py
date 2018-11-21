@@ -14,6 +14,7 @@ TEST_COMPUTER = 'localhost-test'
 
 executables = {
     'qeq.eqeq': 'eqeq',
+    'qeq.qeq': 'egulp',
 }
 
 
