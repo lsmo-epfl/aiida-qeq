@@ -8,7 +8,7 @@ Register data types via the "aiida.data" entry point in setup.json.
 # You can directly use or subclass aiida.orm.data.Data
 # or any other data type listed under 'verdi data'
 from __future__ import absolute_import
-from aiida.orm.data.parameter import ParameterData
+from aiida.orm import Dict
 from voluptuous import Schema, Optional, Any
 from collections import OrderedDict
 
@@ -36,7 +36,7 @@ options = dict(cmdline_options)
 options.update(output_options)
 
 
-class EQeqParameters(ParameterData):
+class EQeqParameters(Dict):
     """
     Command line options for eqeq.
     """

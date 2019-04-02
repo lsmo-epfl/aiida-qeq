@@ -63,7 +63,7 @@ def get_computer(name=TEST_COMPUTER):
     from aiida.common.exceptions import NotExistent
 
     try:
-        computer = Computer.get(name)
+        computer = Computer.objects.get(name=name)
     except NotExistent:
 
         computer = Computer(
@@ -75,6 +75,7 @@ def get_computer(name=TEST_COMPUTER):
             scheduler_type='direct',
             enabled_state=True)
         computer.store()
+        computer.configure()
 
     return computer
 

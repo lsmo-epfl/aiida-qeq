@@ -11,14 +11,11 @@ import os
 import aiida_qeq.tests as tests
 import aiida_qeq.data.eqeq as data
 from aiida_qeq.data import DATA_DIR
-from aiida.orm import DataFactory
-
-# make sure the "eqeq" binary is in your PATH
-code = tests.get_code(entry_point='qeq.eqeq')
+from aiida.plugins import DataFactory, CalculationFactory
+from aiida.engine import run_get_node
 
 # Prepare input parameters
-EQeqParameters = DataFactory('qeq.eqeq')
-parameters = EQeqParameters({'method': 'ewald'})
+parameters = DataFactory('qeq.eqeq')({'method': 'ewald'})
 
 SinglefileData = DataFactory('singlefile')
 charge_file = SinglefileData(
@@ -26,25 +23,28 @@ charge_file = SinglefileData(
 ionization_file = SinglefileData(
     file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
 
-CifData = DataFactory('cif')
-cif = CifData(
+cif = DataFactory('cif')(
     file=os.path.join(tests.TEST_DIR, 'HKUST1.cif'), parse_policy='lazy')
 
-# set up calculation
-calc = code.new_calc()
-calc.label = "aiida_qeq test"
-calc.description = "Test job submission with the aiida_qeq plugin"
-calc.set_max_wallclock_seconds(10 * 60)
-calc.set_withmpi(False)
-calc.set_resources({"num_machines": 1, "num_mpiprocs_per_machine": 1})
+inputs = {
+    # make sure the "eqeq" binary is in your PATH
+    'code': tests.get_code(entry_point='qeq.eqeq'),
+    'structure': cif,
+    'parameters': parameters,
+    'charge_data': charge_file,
+    'ionization_data': ionization_file,
+    'metadata': {
+        'options': {
+            "resources": {
+                "num_machines": 1,
+                "num_mpiprocs_per_machine": 1,
+            },
+            "max_wallclock_seconds": 120,
+        },
+        'label': "aiida_qeq EQEQ test",
+        'description': "Test EQEQ job submission with the aiida_qeq plugin",
+    },
+}
 
-calc.use_parameters(parameters)
-calc.use_charge_data(charge_file)
-calc.use_ionization_data(ionization_file)
-calc.use_structure(cif)
-
-calc.store_all()
-
-calc.submit()
-print("submitted calculation; calc=Calculation(uuid='{}') # ID={}".format(
-    calc.uuid, calc.dbnode.pk))
+_result, node = run_get_node(CalculationFactory('qeq.eqeq'), **inputs)
+print(node)

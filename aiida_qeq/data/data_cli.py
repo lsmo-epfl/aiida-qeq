@@ -2,7 +2,7 @@ from __future__ import absolute_import
 import sys
 import click
 from aiida.cmdline.commands import data_cmd
-from aiida.cmdline.dbenv_lazyloading import load_dbenv_if_not_loaded
+from aiida.cmdline.utils import decorators
 
 
 # See aiida.cmdline.data entry point in setup.json
@@ -13,15 +13,13 @@ def cli():
 
 
 @cli.command('list')
+@decorators.with_dbenv
 def list_():  # pylint: disable=redefined-builtin
     """
     Display all DiffParameters nodes
     """
-    load_dbenv_if_not_loaded(
-    )  # Important to load the dbenv in the last moment
-
     from aiida.orm.querybuilder import QueryBuilder
-    from aiida.orm import DataFactory
+    from aiida.plugins import DataFactory
     DiffParameters = DataFactory('qeq')
 
     qb = QueryBuilder()
@@ -42,11 +40,9 @@ def list_():  # pylint: disable=redefined-builtin
     type=click.Path(dir_okay=False),
     help='Write output to file (default: print to stdout).')
 @click.argument('pk', type=int)
+@decorators.with_dbenv
 def export(outfile, pk):
     """Export a DiffParameters node, identified by PK, to plain text"""
-    load_dbenv_if_not_loaded(
-    )  # Important to load the dbenv in the last moment
-
     from aiida.orm import load_node
     node = load_node(pk)
     string = str(node)

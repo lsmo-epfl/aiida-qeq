@@ -9,7 +9,7 @@ Register data types via the "aiida.data" entry point in setup.json.
 # or any other data type listed under 'verdi data'
 from __future__ import absolute_import
 import os
-from aiida.orm.data.parameter import ParameterData
+from aiida.orm import Dict
 from voluptuous import Schema, Optional, Any, ExactSequence
 from collections import OrderedDict
 
@@ -51,10 +51,8 @@ output_options = {
 options = dict(cmdline_options)
 options.update(output_options)
 
-DATA_DIR = os.path.dirname(os.path.realpath(__file__))
 
-
-class QeqParameters(ParameterData):
+class QeqParameters(Dict):
     """
     Command line options for qeq.
     """
