@@ -5,7 +5,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import aiida_qeq.tests as tests
-from aiida.engine import run_get_node
+from aiida.engine import run
 
 
 # pylint: disable=too-many-arguments,unused-argument
@@ -33,8 +33,7 @@ def test_submit(aiida_profile, clear_database, ionization_file, charge_file,
             "Test EQEQ job submission with the aiida_qeq plugin",
         },
     }
+    result = run(EqeqCalculation, **inputs)
 
-    _result, node = run_get_node(EqeqCalculation, **inputs)
-
-    print(node)
-    assert (_result == 0)
+    charges_list = result['json_with_charges'].get_content()
+    assert charges_list.startswith('[0.878')

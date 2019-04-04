@@ -5,7 +5,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 
 import aiida_qeq.tests as tests
-from aiida.engine import run_get_node
+from aiida.engine import run
 
 
 # pylint: disable=too-many-arguments,unused-argument
@@ -26,8 +26,8 @@ def test_submit(aiida_profile, clear_database, ionization_file, charge_file,
         },
     }
 
-    _result, node = run_get_node(EqeqCalculation, **inputs)
+    result = run(EqeqCalculation, **inputs)
 
-    print(node)
-
-    assert (_result == 0)
+    cif_content = result['structure_with_charges'].get_content()
+    cu_line = 'Cu  Cu     0.2850000    0.2850000    0.0000000    0.6334535'
+    assert cu_line in cif_content

@@ -82,6 +82,15 @@ def hkust1_cif(aiida_profile):  # pylint: disable=unused-argument
 
 
 @pytest.fixture(scope='function')
+def MgO_cif(aiida_profile):  # pylint: disable=unused-argument
+    from aiida.plugins import DataFactory
+    from aiida_qeq.tests import TEST_DIR
+    CifData = DataFactory('cif')
+
+    return CifData(file=os.path.join(TEST_DIR, 'MgO.cif'), parse_policy='lazy')
+
+
+@pytest.fixture(scope='function')
 def qeq_parameters(aiida_profile):  # pylint: disable=unused-argument
     """Sample parameters file for QEQ calculation."""
     from aiida.plugins import DataFactory

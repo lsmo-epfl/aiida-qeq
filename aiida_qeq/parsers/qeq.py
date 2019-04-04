@@ -40,9 +40,9 @@ class QeqParser(Parser):
 
         list_of_files = output_folder.list_object_names()
 
-        try:
+        if 'configure' in self.node.inputs:
             output_files = self.node.inputs.configure.output_files
-        except AttributeError:
+        else:
             output_files = DataFactory('qeq.qeq')().output_files
 
         # Note: set(A) <= set(B) checks whether A is a subset
@@ -60,8 +60,7 @@ class QeqParser(Parser):
             if fname == 'charges.cif':
                 # add cif file
                 cif = CifData(
-                    file=output_folder.get_abs_path(fname),
-                    parse_policy='lazy')
+                    file=output_folder.open(fname), parse_policy='lazy')
                 # Note: we might want to either contribute this attribute upstream
                 # or set up our own CifData class
                 cif.set_attribute('partial_charge_method', 'qeq')
@@ -69,5 +68,5 @@ class QeqParser(Parser):
 
             else:
                 # add as singlefile
-                node = SinglefileData(file=output_folder.get_abs_path(fname))
+                node = SinglefileData(file=output_folder.open(fname))
                 self.out(fname, node)

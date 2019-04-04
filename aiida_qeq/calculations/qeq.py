@@ -75,10 +75,16 @@ class QeqCalculation(CalcJob):
         codeinfo.stdout_name = self._LOG_FILE_NAME
 
         # write configure.input file
-        fd, configure_path = tempfile.mkstemp()
-        with open(configure_path, 'w') as f:
-            f.write(configure.configure_string)
-        os.close(fd)
+        # make this nicer once this issue is resolved
+        # https://github.com/aiidateam/aiida_core/issues/2709
+        handle = tempfile.NamedTemporaryFile(mode='w', delete=False)
+        handle.write(configure.configure_string)
+        handle.close()
+        with open(handle.name, 'r') as handle2:
+            configure_file = SinglefileData(file=handle2).store()
+        os.remove(handle.name)
+
+        #import pdb; pdb.set_trace()
 
         # Prepare CalcInfo object for aiida
         calcinfo = CalcInfo()
@@ -92,7 +98,10 @@ class QeqCalculation(CalcJob):
                 self.inputs.parameters.uuid, self.inputs.parameters.filename,
                 self.inputs.parameters.filename
             ],
-            ['', configure_path, DEFAULT_CONFIGURE_FILE_NAME],
+            [
+                configure_file.uuid, configure_file.filename,
+                DEFAULT_CONFIGURE_FILE_NAME
+            ],
         ]
         calcinfo.remote_copy_list = []
         calcinfo.retrieve_list = configure.output_files

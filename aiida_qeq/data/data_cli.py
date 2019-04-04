@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 import sys
 import click
-from aiida.cmdline.commands import data_cmd
+from aiida.cmdline.commands import cmd_data
 from aiida.cmdline.utils import decorators
 
 
 # See aiida.cmdline.data entry point in setup.json
-@data_cmd.group('qeq')
+@cmd_data.group('qeq')
 def cli():
     """Command line interface for aiida-qeq"""
     pass
