@@ -1,31 +1,23 @@
 language: python
 python:
+- "3.6"
 - "2.7"
 
-cache: pip
-
 services:
-- postgresql
+  - postgresql
+  - rabbitmq
 
 addons:
-  postgresql: "9.5"
-
-before_install:
-# Upgrade pip setuptools and wheel
-- pip install -U pip wheel setuptools
-
-install:
-- pip install -e .[testing,docs,pre-commit]
-- reentry scan -r aiida
-- pip install coveralls
-# add fake eqeq & egulp executables
-- cat "#!/bin/bash\necho 'eqeq'" > eqeq; chmod +x eqeq
-- cat "#!/bin/bash\necho 'egulp'" > egulp; chmod +x egulp
+  postgresql: "10"
 
 env:
   global:
-  # add eqeq executable to PATH
-  - PATH=${PATH}:${TRAVIS_BUILD_DIR}
+  - AIIDA_VERSION: develop
+  - AIIDA_DEVELOP_GIT_HASH: 0ca5d991d039dca2261df3d6ad8da2f03d591caa
+  # add network executable to PATH
+  #- PATH=${PATH}:${TRAVIS_BUILD_DIR}
+  # add fake executables to path
+  - PATH: "${PATH}:${TRAVIS_BUILD_DIR}/.travis-data"
   matrix:
   - TEST_AIIDA_BACKEND: django
     TEST_TYPE: tests
@@ -36,17 +28,29 @@ env:
     READTHEDOCS: 'True'
   - TEST_AIIDA_BACKEND: django
     TEST_TYPE: pre-commit
-    
+
   # Remove this to enforce the AiiDA coding style
   allow_failures: 
   - TEST_AIIDA_BACKEND: django
     TEST_TYPE: pre-commit
 
+before_install:
+  # Upgrade pip setuptools and wheel
+  - pip install -U wheel setuptools coveralls
+  - pip install pip==18.1
+  # add fake eqeq & egulp executables
+  - cat "#!/bin/bash\necho 'eqeq'" > eqeq; chmod +x eqeq
+  - cat "#!/bin/bash\necho 'egulp'" > egulp; chmod +x egulp
+
+install:
+  - if [ "$AIIDA_VERSION" == "develop" ]; then .travis-data/install_aiida_github.sh ; fi  # installs develop branch
+  - pip install -e .[testing,pre-commit]
+  - reentry scan -r aiida
+
 script:
-- if [ "$TEST_TYPE" == "tests" ] ; then coverage run --append manage.py; fi  # runs unit tests
-- if [ "$TEST_TYPE" == "docs" ] ; then cd docs; make; fi  # creates documentation
-# runs precommit checks but doesn't fail if they don't pass
-- if [ "$TEST_TYPE" == "pre-commit" ] ; then pre-commit install; pre-commit run --all-files || ( git status --short; git diff ; exit 1 ); fi
+  - if [ "$TEST_TYPE" == "tests" ] ; then py.test --cov aiida_qeq --cov-append . ; fi  # runs unit tests
+  - if [ "$TEST_TYPE" == "pre-commit" ] ; then pre-commit install; pre-commit run --all-files || ( git status --short; git diff ; exit 1 ); fi
+  - if [ "$TEST_TYPE" == "docs" ] ; then cd docs; make; fi  # creates documentation
 
 after_success:
-- coveralls
+  - coveralls
