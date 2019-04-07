@@ -57,7 +57,8 @@ class QeqParameters(Dict):
     Command line options for qeq.
     """
 
-    schema = Schema(options)
+    _schema = Schema(options)
+    schema = _schema.schema  # alias for easier printing
 
     # pylint: disable=redefined-builtin
     def __init__(self, dict=None, **kwargs):
@@ -81,7 +82,7 @@ class QeqParameters(Dict):
 
     def validate(self, parameters_dict):
         """Validate command line options."""
-        return QeqParameters.schema(parameters_dict)
+        return QeqParameters._schema(parameters_dict)
 
     def cmdline_params(self,
                        structure_file_name,

@@ -41,7 +41,8 @@ class EQeqParameters(Dict):
     Command line options for eqeq.
     """
 
-    schema = Schema(options)
+    _schema = Schema(options)
+    schema = _schema.schema  # alias for easier printing
 
     # pylint: disable=redefined-builtin
     def __init__(self, dict=None, **kwargs):
@@ -63,7 +64,7 @@ class EQeqParameters(Dict):
 
     def validate(self, parameters_dict):
         """Validate command line options."""
-        return EQeqParameters.schema(parameters_dict)
+        return EQeqParameters._schema(parameters_dict)
 
     def cmdline_params(self,
                        structure_file_name,

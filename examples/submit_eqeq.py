@@ -12,7 +12,7 @@ import aiida_qeq.tests as tests
 import aiida_qeq.data.eqeq as data
 from aiida_qeq.data import DATA_DIR
 from aiida.plugins import DataFactory, CalculationFactory
-from aiida.engine import run_get_node
+from aiida.engine import run
 
 # Prepare input parameters
 parameters = DataFactory('qeq.eqeq')({'method': 'ewald'})
@@ -46,5 +46,5 @@ inputs = {
     },
 }
 
-_result, node = run_get_node(CalculationFactory('qeq.eqeq'), **inputs)
-print(node)
+result = run(CalculationFactory('qeq.eqeq'), **inputs)
+print(result)

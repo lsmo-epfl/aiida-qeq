@@ -12,7 +12,7 @@ import aiida_qeq.tests as tests
 import aiida_qeq.data.qeq as data
 from aiida_qeq.data import DATA_DIR
 from aiida.plugins import DataFactory, CalculationFactory
-from aiida.engine import run_get_node
+from aiida.engine import run
 
 # Prepare input parameters
 CifData = DataFactory('cif')
@@ -25,7 +25,7 @@ cif = CifData(
     file=os.path.join(tests.TEST_DIR, 'HKUST1.cif'), parse_policy='lazy')
 
 inputs = {
-    # make sure the "eqeq" binary is in your PATH
+    # make sure the "qeq" binary is in your PATH
     'code': tests.get_code(entry_point='qeq.qeq'),
     # 'configure': data.QeqParameters()
     'structure': cif,
@@ -43,5 +43,5 @@ inputs = {
     },
 }
 
-_result, node = run_get_node(CalculationFactory('qeq.qeq'), **inputs)
-print(node)
+result = run(CalculationFactory('qeq.qeq'), **inputs)
+print(result)

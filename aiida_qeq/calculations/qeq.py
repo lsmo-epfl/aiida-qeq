@@ -5,8 +5,7 @@ Register calculations via the "aiida.calculations" entry point in setup.json.
 """
 
 from __future__ import absolute_import
-import tempfile
-import os
+import io
 from aiida.engine import CalcJob
 from aiida.orm import SinglefileData, Data
 from aiida.common.datastructures import (CalcInfo, CodeInfo)
@@ -75,16 +74,9 @@ class QeqCalculation(CalcJob):
         codeinfo.stdout_name = self._LOG_FILE_NAME
 
         # write configure.input file
-        # make this nicer once this issue is resolved
-        # https://github.com/aiidateam/aiida_core/issues/2709
-        handle = tempfile.NamedTemporaryFile(mode='w', delete=False)
-        handle.write(configure.configure_string)
-        handle.close()
-        with open(handle.name, 'r') as handle2:
-            configure_file = SinglefileData(file=handle2).store()
-        os.remove(handle.name)
-
-        #import pdb; pdb.set_trace()
+        with io.StringIO(configure.configure_string) as handle:
+            folder.create_file_from_filelike(
+                handle, filename=DEFAULT_CONFIGURE_FILE_NAME, mode='w')
 
         # Prepare CalcInfo object for aiida
         calcinfo = CalcInfo()
@@ -97,10 +89,6 @@ class QeqCalculation(CalcJob):
             [
                 self.inputs.parameters.uuid, self.inputs.parameters.filename,
                 self.inputs.parameters.filename
-            ],
-            [
-                configure_file.uuid, configure_file.filename,
-                DEFAULT_CONFIGURE_FILE_NAME
             ],
         ]
         calcinfo.remote_copy_list = []
