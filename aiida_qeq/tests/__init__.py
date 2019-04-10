@@ -63,7 +63,7 @@ def get_computer(name=TEST_COMPUTER):
     from aiida.common.exceptions import NotExistent
 
     try:
-        computer = Computer.get(name)
+        computer = Computer.objects.get(name=name)
     except NotExistent:
 
         computer = Computer(
@@ -72,9 +72,9 @@ def get_computer(name=TEST_COMPUTER):
             hostname=TEST_COMPUTER,
             workdir=tempfile.mkdtemp(),
             transport_type='local',
-            scheduler_type='direct',
-            enabled_state=True)
+            scheduler_type='direct')
         computer.store()
+        computer.configure()
 
     return computer
 
