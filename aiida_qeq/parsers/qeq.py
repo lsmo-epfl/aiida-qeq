@@ -21,9 +21,9 @@ class QeqParser(Parser):
         """
         Initialize Parser instance
         """
-        super(QeqParser, self).__init__(node)
+        super(QeqParser, self).__init__(node)  # pylint: disable=(super-with-arguments
         if not issubclass(node.process_class, QeqCalculation):
-            raise exceptions.ParsingError("Can only parse EQeqCalculation")
+            raise exceptions.ParsingError('Can only parse EQeqCalculation')
 
     def parse(self, **kwargs):  # pylint: disable=inconsistent-return-statements
         """
@@ -49,24 +49,21 @@ class QeqParser(Parser):
         if set(output_files) <= set(list_of_files):
             pass
         else:
-            self.logger.error(
-                "Not all expected output files {} were found".format(
-                    output_files))
+            self.logger.error('Not all expected output files {} were found'.format(output_files))
 
-        SinglefileData = DataFactory('singlefile')
-        CifData = DataFactory('cif')
+        CifData = DataFactory('cif')  # pylint: disable=invalid-name
 
         for fname in output_files:
             if fname == 'charges.cif':
                 # add cif file
-                cif = CifData(
-                    file=output_folder.open(fname), parse_policy='lazy')
+                cif = CifData(file=output_folder.open(fname, 'rb'), parse_policy='lazy')
                 # Note: we might want to either contribute this attribute upstream
                 # or set up our own CifData class
                 cif.set_attribute('partial_charge_method', 'qeq')
                 self.out('structure_with_charges', cif)
 
-            else:
-                # add as singlefile
-                node = SinglefileData(file=output_folder.open(fname))
-                self.out(fname, node)
+            # We discard the other files for sake of storage efficiency
+            # else:
+            #     # add as singlefile
+            #     node = SinglefileData(file=output_folder.open(fname))
+            #     self.out(fname, node)

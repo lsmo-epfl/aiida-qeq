@@ -79,12 +79,16 @@ verdi calculation plugins  # should now show your calclulation plugins
 
 Here goes a complete example of how to submit a test calculation using this plugin.
 
+In order to work, the commands `egulp` (for Qeq) and `eqeq` (for EQeq) needs to work on the machine and run the code's exectuable.
+To get these programs you can look into [danieleongari/egulp](https://github.com/danieleongari/egulp)
+and [danieleongari/EQeq](https://github.com/danieleongari/EQeq)
+or the compiled binaries provided within [lsmo-epfl/aiida-lsmo-codes](https://github.com/lsmo-epfl/aiida-lsmo-codes).
+
 A quick demo of how to submit a calculation:
 ```shell
-verdi daemon start         # make sure the daemon is running
 cd examples
-verdi run submit_qeq.py    # submit qeq test calculation
-verdi run submit_eqeq.py   # submit eqeq test calculation
+verdi run run_qeq.py    # submit qeq test calculation
+verdi run run_eqeq.py   # submit eqeq test calculation
 verdi process list -a  # check status of calculation
 ```
 
