@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ tests for the plugin
 
 Use the aiida.utils.fixtures.PluginTestCase class for convenient
@@ -43,36 +44,35 @@ def get_path_to_executable(executable):
     import distutils.spawn  # pylint: disable=no-name-in-module,import-error
     path = distutils.spawn.find_executable(executable)
     if path is None:
-        raise ValueError("{} executable not found in PATH.".format(executable))
+        raise ValueError('{} executable not found in PATH.'.format(executable))
 
     return os.path.abspath(path)
 
 
-def get_computer(name=TEST_COMPUTER):
+def get_computer(label=TEST_COMPUTER):
     """Get local computer.
 
     Sets up local computer with 'name' or reads it from database,
     if it exists.
-    
+
     :param name: Name of local computer
 
-    :return: The computer node 
-    :rtype: :py:class:`aiida.orm.Computer` 
+    :return: The computer node
+    :rtype: :py:class:`aiida.orm.Computer`
     """
     from aiida.orm import Computer
     from aiida.common.exceptions import NotExistent
 
     try:
-        computer = Computer.objects.get(name=name)
+        computer = Computer.objects.get(label=label)
     except NotExistent:
 
-        computer = Computer(
-            name=name,
-            description='localhost computer set up by aiida_qeq tests',
-            hostname=TEST_COMPUTER,
-            workdir=tempfile.mkdtemp(),
-            transport_type='local',
-            scheduler_type='direct')
+        computer = Computer(label=label,
+                            description='localhost computer set up by aiida_qeq tests',
+                            hostname=TEST_COMPUTER,
+                            workdir=tempfile.mkdtemp(),
+                            transport_type='local',
+                            scheduler_type='direct')
         computer.store()
         computer.configure()
 
@@ -83,12 +83,12 @@ def get_code(entry_point, computer_name=TEST_COMPUTER):
     """Get local code.
 
     Sets up code for given entry point on given computer.
-    
+
     :param entry_point: Entry point of calculation plugin
     :param computer_name: Name of (local) computer
 
-    :return: The code node 
-    :rtype: :py:class:`aiida.orm.Code` 
+    :return: The code node
+    :rtype: :py:class:`aiida.orm.Code`
     """
     from aiida.orm import Code
     from aiida.common.exceptions import NotExistent
@@ -98,9 +98,8 @@ def get_code(entry_point, computer_name=TEST_COMPUTER):
     try:
         executable = executables[entry_point]
     except KeyError:
-        raise KeyError(
-            "Entry point {} not recognized. Allowed values: {}".format(
-                entry_point, list(executables.keys())))
+        raise KeyError('Entry point {} not recognized. Allowed values: {}'.format(entry_point,
+                                                                                  list(executables.keys())))
 
     try:
         code = Code.get_from_string('{}@{}'.format(executable, computer_name))
