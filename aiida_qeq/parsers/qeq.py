@@ -4,12 +4,13 @@ Parsers provided by aiida_qeq for QEQ calculations.
 
 Register parsers via the "aiida.parsers" entry point in setup.json.
 """
-from __future__ import absolute_import
 
 from aiida.parsers.parser import Parser
 from aiida.common import exceptions
 from aiida.plugins import CalculationFactory, DataFactory
+
 QeqCalculation = CalculationFactory('qeq.qeq')
+SinglefileData = DataFactory('singlefile')
 
 
 class QeqParser(Parser):
@@ -21,7 +22,7 @@ class QeqParser(Parser):
         """
         Initialize Parser instance
         """
-        super(QeqParser, self).__init__(node)  # pylint: disable=(super-with-arguments
+        super(QeqParser, self).__init__(node)  # pylint: disable=super-with-arguments
         if not issubclass(node.process_class, QeqCalculation):
             raise exceptions.ParsingError('Can only parse EQeqCalculation')
 
@@ -56,14 +57,14 @@ class QeqParser(Parser):
         for fname in output_files:
             if fname == 'charges.cif':
                 # add cif file
-                cif = CifData(file=output_folder.open(fname, 'rb'), parse_policy='lazy')
+                with output_folder.open(fname, 'rb') as handle:
+                    cif = CifData(file=handle, parse_policy='lazy')
                 # Note: we might want to either contribute this attribute upstream
                 # or set up our own CifData class
                 cif.set_attribute('partial_charge_method', 'qeq')
                 self.out('structure_with_charges', cif)
-
-            # We discard the other files for sake of storage efficiency
-            # else:
-            #     # add as singlefile
-            #     node = SinglefileData(file=output_folder.open(fname))
-            #     self.out(fname, node)
+            else:
+                # add as singlefile
+                with output_folder.open(fname, 'rb') as handle:
+                    node = SinglefileData(file=handle)
+                self.out(fname, node)

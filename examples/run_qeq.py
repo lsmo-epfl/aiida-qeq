@@ -1,38 +1,49 @@
-#!/usr/bin/env python  # pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
-"""Submit a test calculation on localhost.
-
-Usage: verdi run submit.py
-
-Note: This script assumes you have set up computer and code as in README.md.
+"""Submit a test calculation with qeq.
 """
+
 import os
-import aiida_qeq.tests as tests
-import aiida_qeq.data.qeq as data
-from aiida_qeq.data import DATA_DIR
+import click
 from aiida.plugins import DataFactory, CalculationFactory
 from aiida.engine import run
+from aiida import cmdline
+
+import aiida_qeq.data.qeq as data
+from aiida_qeq.data import DATA_DIR
+from . import EXAMPLE_DIR
 
 QeqCalc = CalculationFactory('qeq.qeq')
 CifData = DataFactory('cif')
 SinglefileData = DataFactory('singlefile')
+Parameters = DataFactory('qeq.qeq')
 
-builder = QeqCalc.get_builder()
-builder.code = tests.get_code(entry_point='qeq.qeq')
-builder.metadata = {
-    'options': {
-        'resources': {
-            'num_machines': 1,
-            'num_mpiprocs_per_machine': 1,
-        },
-        'max_wallclock_seconds': 120,
-    },
-    'label': 'aiida_qeq QEQ test',
-    'description': 'Test QEQ job submission with the aiida_qeq plugin',
-}
 
-builder.structure = CifData(file=os.path.join(tests.TEST_DIR, 'HKUST1.cif'))
-builder.parameters = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_PARAM_FILE_NAME))
+def run_qeq_hkust1(qeq_code):  # pylint: disable=
+    """Run qeq calculation on HKUST-1
+    """
 
-result = run(builder)
-print(result)
+    builder = QeqCalc.get_builder()
+
+    builder = QeqCalc.get_builder()
+    builder.code = qeq_code
+    builder.structure = CifData(file=os.path.join(EXAMPLE_DIR, 'HKUST1.cif'))
+    builder.parameters = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_PARAM_FILE_NAME))
+
+    result = run(builder)
+    print(result)
+
+    cif_content = result['structure_with_charges'].get_content()
+    assert 'Cu' in cif_content
+
+
+@click.command()
+@cmdline.utils.decorators.with_dbenv()
+@click.option('--qeq-code', type=cmdline.params.types.CodeParamType())
+def cli(qeq_code):
+    """Run qeq calculation on HKUST-1
+    """
+    run_qeq_hkust1(qeq_code=qeq_code)
+
+
+if __name__ == '__main__':
+    cli()  # pylint: disable=no-value-for-parameter

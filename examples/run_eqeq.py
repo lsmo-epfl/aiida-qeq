@@ -1,41 +1,50 @@
-#!/usr/bin/env python  # pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
-"""Submit a test calculation on localhost.
-
-Usage: verdi run submit.py
-
-Note: This script assumes you have set up computer and code as in README.md.
+"""Submit a test calculation with eqeq.
 """
+
 import os
-import aiida_qeq.tests as tests
-import aiida_qeq.data.eqeq as data
-from aiida_qeq.data import DATA_DIR
+import click
 from aiida.plugins import DataFactory, CalculationFactory
 from aiida.engine import run
+from aiida import cmdline
+
+import aiida_qeq.data.eqeq as data
+from aiida_qeq.data import DATA_DIR
+from . import EXAMPLE_DIR
 
 EqeqCalc = CalculationFactory('qeq.eqeq')
 CifData = DataFactory('cif')
 SinglefileData = DataFactory('singlefile')
 Parameters = DataFactory('qeq.eqeq')
 
-builder = EqeqCalc.get_builder()
-builder.code = tests.get_code(entry_point='qeq.eqeq')
-builder.metadata = {
-    'options': {
-        'resources': {
-            'num_machines': 1,
-            'num_mpiprocs_per_machine': 1,
-        },
-        'max_wallclock_seconds': 120,
-    },
-    'label': 'aiida_qeq EQEQ test',
-    'description': 'Test EQEQ job submission with the aiida_qeq plugin',
-}
 
-builder.structure = CifData(file=os.path.join(tests.TEST_DIR, 'HKUST1.cif'))
-builder.parameters = Parameters({'method': 'ewald'})
-builder.charge_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
-builder.ionization_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
+def run_eqeq_hkust1(eqeq_code):  # pylint: disable=
+    """Run eqeq calculation on HKUST-1
+    """
 
-result = run(builder)
-print(result)
+    builder = EqeqCalc.get_builder()
+    builder.code = eqeq_code
+    builder.structure = CifData(file=os.path.join(EXAMPLE_DIR, 'HKUST1.cif'))
+    builder.parameters = Parameters({'method': 'ewald'})
+    builder.charge_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
+    builder.ionization_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
+
+    result = run(builder)
+
+    cif_content = result['structure_with_charges'].get_content()
+    assert 'Cu' in cif_content
+
+    print(result)
+
+
+@click.command()
+@cmdline.utils.decorators.with_dbenv()
+@click.option('--eqeq-code', type=cmdline.params.types.CodeParamType())
+def cli(eqeq_code):
+    """Run eqeq calculation on HKUST-1
+    """
+    run_eqeq_hkust1(eqeq_code=eqeq_code)
+
+
+if __name__ == '__main__':
+    cli()  # pylint: disable=no-value-for-parameter

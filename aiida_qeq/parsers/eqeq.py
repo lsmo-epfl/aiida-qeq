@@ -8,7 +8,9 @@ from aiida.parsers.parser import Parser
 from aiida.common import exceptions
 
 from aiida.plugins import CalculationFactory, DataFactory
+
 EQeqCalculation = CalculationFactory('qeq.eqeq')
+SinglefileData = DataFactory('singlefile')
 
 
 class EQeqParser(Parser):
@@ -20,7 +22,7 @@ class EQeqParser(Parser):
         """
         Initialize Parser instance
         """
-        super(EQeqParser, self).__init__(node)  # pylint: disable=(super-with-arguments
+        super(EQeqParser, self).__init__(node)  # pylint: disable=super-with-arguments
         if not issubclass(node.process_class, EQeqCalculation):
             raise exceptions.ParsingError('Can only parse EQeqCalculation')
 
@@ -52,14 +54,14 @@ class EQeqParser(Parser):
             fname = output_dict[ext]
             if ext == 'cif':
                 # add cif file
-                cif = CifData(file=output_folder.open(fname, 'rb'), parse_policy='lazy')
+                with output_folder.open(fname, 'rb') as handle:
+                    cif = CifData(file=handle, parse_policy='lazy')
                 # Note: we might want to either contribute this attribute upstream
                 # or set up our own CifData class
                 cif.set_attribute('partial_charge_method', 'eqeq')
                 self.out('structure_with_charges', cif)
-
-            # We discard the other files for sake of storage efficiency
-            # else:
-            #     # add as singlefile
-            #     node = SinglefileData(file=output_folder.open(fname))
-            #     self.out('{}_with_charges'.format(ext), node)
+            else:
+                # add as singlefile
+                with output_folder.open(fname, 'rb') as handle:
+                    node = SinglefileData(file=handle)
+                self.out('{}_with_charges'.format(ext), node)

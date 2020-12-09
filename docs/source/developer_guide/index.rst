@@ -18,7 +18,7 @@ Enable enable automatic checks of code sanity and coding style::
     pip install -e .[pre-commit]
     pre-commit install
 
-After this, the `yapf <https://github.com/google/yapf>`_ formatter, 
+After this, the `yapf <https://github.com/google/yapf>`_ formatter,
 the `pylint <https://www.pylint.org/>`_ linter
 and the `prospector <https://pypi.org/project/prospector/>`_ code analyzer will
 run at every commit.
@@ -37,7 +37,7 @@ Continuous integration
 #. build the documentation
 #. check coding style and version number (not required to pass by default)
 
-Just enable Travis builds for the ``aiida-qeq`` repository in your Travis account. 
+Just enable Travis builds for the ``aiida-qeq`` repository in your Travis account.
 
 Online documentation
 ++++++++++++++++++++
@@ -61,4 +61,3 @@ Just register for an account and::
 After this, you (and everyone else) should be able to::
 
     pip install aiida-qeq
-

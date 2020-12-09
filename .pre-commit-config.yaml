@@ -51,3 +51,9 @@
     entry: pylint
     types: [python]
     language: system
+
+  - id: version-number
+    name: Check version numbers
+    entry: python ./.github/check_version.py
+    language: system
+    files: '^(setup.json)|(aiida_qeq/__init__.py)'

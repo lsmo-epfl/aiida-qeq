@@ -1,15 +1,14 @@
+# -*- coding: utf-8 -*-
 """
 Calculations provided by aiida_qeq.
 
 Register calculations via the "aiida.calculations" entry point in setup.json.
 """
 
-from __future__ import absolute_import
 from aiida.engine import CalcJob
 from aiida.orm import SinglefileData, Data
 from aiida.common.datastructures import (CalcInfo, CodeInfo)
 from aiida.plugins import DataFactory
-import six
 
 EQeqParameters = DataFactory('qeq.eqeq')
 CifData = DataFactory('cif')
@@ -25,31 +24,23 @@ class EQeqCalculation(CalcJob):
     @classmethod
     def define(cls, spec):
         super(EQeqCalculation, cls).define(spec)
-        spec.input(
-            'metadata.options.parser_name',
-            valid_type=six.string_types,
-            default='qeq.eqeq')
-        spec.input('metadata.options.withmpi', valid_type=bool, default=False)
+        spec.inputs['metadata']['options']['parser_name'].default = 'qeq.eqeq'
+        spec.inputs['metadata']['options']['resources'].default = {
+            'num_machines': 1,
+            'num_mpiprocs_per_machine': 1,
+        }
+        spec.inputs['metadata']['options']['withmpi'].default = False
 
-        spec.input(
-            'parameters',
-            valid_type=EQeqParameters,
-            help='Command line parameters for EQEQ')
-        spec.input(
-            'ionization_data',
-            valid_type=SinglefileData,
-            help='File containing ionization data on the elements.')
-        spec.input(
-            'charge_data',
-            valid_type=SinglefileData,
-            help=
-            'File containing information on common oxidation state of the elements.'
-        )
-        spec.input(
-            'structure',
-            valid_type=CifData,
-            help='Input structure, for which atomic charges are to be computed.'
-        )
+        spec.input('parameters', valid_type=EQeqParameters, help='Command line parameters for EQEQ')
+        spec.input('ionization_data',
+                   valid_type=SinglefileData,
+                   help='File containing ionization data on the elements.')
+        spec.input('charge_data',
+                   valid_type=SinglefileData,
+                   help='File containing information on common oxidation state of the elements.')
+        spec.input('structure',
+                   valid_type=CifData,
+                   help='Input structure, for which atomic charges are to be computed.')
 
         spec.outputs.dynamic = True
         spec.outputs.valid_type = Data
@@ -73,23 +64,15 @@ class EQeqCalculation(CalcJob):
         calcinfo = CalcInfo()
         calcinfo.uuid = self.uuid
         calcinfo.local_copy_list = [
+            [self.inputs.structure.uuid, self.inputs.structure.filename, self.inputs.structure.filename],
             [
-                self.inputs.structure.uuid, self.inputs.structure.filename,
-                self.inputs.structure.filename
-            ],
-            [
-                self.inputs.ionization_data.uuid,
-                self.inputs.ionization_data.filename,
+                self.inputs.ionization_data.uuid, self.inputs.ionization_data.filename,
                 self.inputs.ionization_data.filename
             ],
-            [
-                self.inputs.charge_data.uuid, self.inputs.charge_data.filename,
-                self.inputs.charge_data.filename
-            ],
+            [self.inputs.charge_data.uuid, self.inputs.charge_data.filename, self.inputs.charge_data.filename],
         ]
         calcinfo.remote_copy_list = []
-        calcinfo.retrieve_list = self.inputs.parameters.output_files(
-            self.inputs.structure.filename)
+        calcinfo.retrieve_list = self.inputs.parameters.output_files(self.inputs.structure.filename)
         calcinfo.codes_info = [codeinfo]
 
         return calcinfo
