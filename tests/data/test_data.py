@@ -1,10 +1,13 @@
-from __future__ import absolute_import
-from __future__ import print_function
+# -*- coding: utf-8 -*-
+"""Tests for data types defined by plugin."""
 from aiida.manage.fixtures import PluginTestCase
 
 
 class TestEQeqParameters(PluginTestCase):
+    """Test input parameters for Qeq calculation"""
+
     def test_cmdline_1(self):
+        """Test that command line parameters passed to eqeq are as expected."""
         from aiida.plugins import DataFactory
         EQeqParameters = DataFactory('qeq.eqeq')
 
@@ -13,8 +16,7 @@ class TestEQeqParameters(PluginTestCase):
 
         cmdline = p.cmdline_params(structure_file_name='test.cif')
         expected_cmdline = [
-            'test.cif', '1.2', '-2.0', '3', 'ewald', '2', '2', '50',
-            'ionizationdata.dat', 'chargecenters.dat'
+            'test.cif', '1.2', '-2.0', '3', 'ewald', '2', '2', '50', 'ionizationdata.dat', 'chargecenters.dat'
         ]
 
         self.assertEqual(cmdline, expected_cmdline)
@@ -32,7 +34,10 @@ class TestEQeqParameters(PluginTestCase):
 
 
 class TestQeqParameters(PluginTestCase):
+    """Test input parameters for Qeq calculation"""
+
     def test_cmdline_1(self):
+        """Test that command line parameters passed to egulp are as expected."""
         from aiida.plugins import DataFactory
         QeqParameters = DataFactory('qeq.qeq')
 

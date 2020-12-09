@@ -7,7 +7,6 @@ Register data types via the "aiida.data" entry point in setup.json.
 
 # You can directly use or subclass aiida.orm.data.Data
 # or any other data type listed under 'verdi data'
-from __future__ import absolute_import
 import os
 from aiida.orm import Dict
 from voluptuous import Schema, Optional, Any, ExactSequence
@@ -18,19 +17,14 @@ cmdline_options = OrderedDict([
     (Optional('build_grid', default=False), bool),
     # true/false input_grid_file dh1sz dh2sz dh3sz vdw_factor_e vdw_factor_f use_vdw_factor offset
     # e.g. build_grid_from_scratch 1 none 0.25 0.25 0.25 1.0 2.0 0 3.0
-    (Optional('build_grid_from_scratch', default=[True, 'none']),
-     ExactSequence([bool, str])),
-    (Optional('grid_spacing', default=[0.25, 0.25, 0.25]),
-     ExactSequence([float, float, float])),
+    (Optional('build_grid_from_scratch', default=[True, 'none']), ExactSequence([bool, str])),
+    (Optional('grid_spacing', default=[0.25, 0.25, 0.25]), ExactSequence([float, float, float])),
     # where to print the potential (e.g. between 1x vdw radius and 2x vdw radius)
-    (Optional('vdw_factors', default=[False, 1.0, 2.0]),
-     ExactSequence([bool, float, float])),
+    (Optional('vdw_factors', default=[False, 1.0, 2.0]), ExactSequence([bool, float, float])),
     (Optional('offset', default=3.0), float),
-    (Optional('save_grid', default=[False, 'grid.cube']),
-     ExactSequence([bool, str])),
+    (Optional('save_grid', default=[False, 'grid.cube']), ExactSequence([bool, str])),
     (Optional('calculate_pot_diff', default=False), bool),
-    (Optional('calculate_pot', default=[0, 'repeat.cube']),
-     ExactSequence([int, str])),
+    (Optional('calculate_pot', default=[0, 'repeat.cube']), ExactSequence([int, str])),
     (Optional('skip_everything', default=False), bool),
     (Optional('point_charges_present', default=False), bool),
     (Optional('include_pceq', default=False), bool),
@@ -39,14 +33,11 @@ cmdline_options = OrderedDict([
 
 DEFAULT_PARAM_FILE_NAME = 'GMP.param'
 DEFAULT_CONFIGURE_FILE_NAME = 'configure.input'
+
 DEFAULT_OUTPUT_FILES = ['charges.cif']
+ALL_OUTPUT_FILES = ['charges.cif', 'charges.dat', 'charges.xyz', 'energy.dat']
 
-ALL_OUTPUT_FILES = ["charges.cif", "charges.dat", "charges.xyz", "energy.dat"]
-
-output_options = {
-    Optional('retrieve', default=DEFAULT_OUTPUT_FILES):
-    [Any(*ALL_OUTPUT_FILES)]
-}
+output_options = {Optional('retrieve', default=DEFAULT_OUTPUT_FILES): [Any(*ALL_OUTPUT_FILES)]}
 
 options = dict(cmdline_options)
 options.update(output_options)
@@ -84,9 +75,7 @@ class QeqParameters(Dict):
         """Validate command line options."""
         return QeqParameters._schema(parameters_dict)
 
-    def cmdline_params(self,
-                       structure_file_name,
-                       param_file_name=DEFAULT_PARAM_FILE_NAME):
+    def cmdline_params(self, structure_file_name, param_file_name=DEFAULT_PARAM_FILE_NAME):
         """Synthesize command line parameters.
 
         e.g. [ 'HKUST-1.cif', 'GMP.param', 'configure.input']
@@ -106,11 +95,11 @@ class QeqParameters(Dict):
     @property
     def output_files(self):
         """Returns list of expected output files.
-        
+
         :param structure_file_name: Name of input structure (cif format)
         """
         pm_dict = self.get_dict()
-        return pm_dict["retrieve"]
+        return pm_dict['retrieve']
 
     @property
     def configure_string(self):
@@ -133,28 +122,25 @@ class QeqParameters(Dict):
 
         br = os.linesep
 
-        s = ""
-        s += "build_grid {}".format(int(pm_dict["build_grid"]))
-        s += br + "build_grid_from_scratch {} {} {} {} {} {} {} {} {}".format(
-            int(pm_dict["build_grid_from_scratch"][0]),
-            pm_dict["build_grid_from_scratch"][1],
-            pm_dict["grid_spacing"][0],
-            pm_dict["grid_spacing"][1],
-            pm_dict["grid_spacing"][2],
-            pm_dict["vdw_factors"][1],
-            pm_dict["vdw_factors"][2],
-            int(pm_dict["vdw_factors"][0]),
-            pm_dict["offset"],
+        s = ''
+        s += 'build_grid {}'.format(int(pm_dict['build_grid']))
+        s += br + 'build_grid_from_scratch {} {} {} {} {} {} {} {} {}'.format(
+            int(pm_dict['build_grid_from_scratch'][0]),
+            pm_dict['build_grid_from_scratch'][1],
+            pm_dict['grid_spacing'][0],
+            pm_dict['grid_spacing'][1],
+            pm_dict['grid_spacing'][2],
+            pm_dict['vdw_factors'][1],
+            pm_dict['vdw_factors'][2],
+            int(pm_dict['vdw_factors'][0]),
+            pm_dict['offset'],
         )
-        s += br + "save_grid {} {}".format(
-            int(pm_dict["save_grid"][0]), pm_dict["save_grid"][1])
-        s += br + "calculate_pot_diff {}".format(
-            int(pm_dict["calculate_pot_diff"]))
-        s += br + "calculate_pot {} {}".format(*pm_dict["calculate_pot"])
-        s += br + "skip_everything {}".format(int(pm_dict["skip_everything"]))
-        s += br + "point_charges_present {}".format(
-            int(pm_dict["point_charges_present"]))
-        s += br + "include_pceq {}".format(int(pm_dict["include_pceq"]))
-        s += br + "imethod {}".format(pm_dict["imethod"])
+        s += br + 'save_grid {} {}'.format(int(pm_dict['save_grid'][0]), pm_dict['save_grid'][1])
+        s += br + 'calculate_pot_diff {}'.format(int(pm_dict['calculate_pot_diff']))
+        s += br + 'calculate_pot {} {}'.format(*pm_dict['calculate_pot'])
+        s += br + 'skip_everything {}'.format(int(pm_dict['skip_everything']))
+        s += br + 'point_charges_present {}'.format(int(pm_dict['point_charges_present']))
+        s += br + 'include_pceq {}'.format(int(pm_dict['include_pceq']))
+        s += br + 'imethod {}'.format(pm_dict['imethod'])
 
         return s

@@ -95,11 +95,20 @@ verdi process list -a  # check status of calculation
 ## Development
 
 ```shell
-git clone https://github.com/ltalirz/aiida-qeq .
+git clone https://github.com/lsmo-epfl/aiida-qeq
 cd aiida-qeq
-pip install -e .[pre-commit,testing]
-pre-commit install  # enable pre-commit hooks
-pytest              # run unit tests
+pip install -e .['pre-commit','testing']
+pytest
+```
+
+If you are changing the inputs of existing tests or need to regenerate test data, place an `.aiida-testing-config.yml`
+file in your repository that points to the required simulation codes:
+```yaml
+---
+mock_code:
+  # code-label: absolute path
+  egulp-fc4d7b7: /path/to/cp2k.sopt
+  eqeq-6490320: /path/to/Chargemol_09_02_2017_linux_serial
 ```
 
 ## License

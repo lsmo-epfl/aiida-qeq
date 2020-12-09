@@ -7,7 +7,6 @@ Register data types via the "aiida.data" entry point in setup.json.
 
 # You can directly use or subclass aiida.orm.data.Data
 # or any other data type listed under 'verdi data'
-from __future__ import absolute_import
 from aiida.orm import Dict
 from voluptuous import Schema, Optional, Any
 from collections import OrderedDict
@@ -17,19 +16,19 @@ cmdline_options = OrderedDict([
     (Optional('lambda', default=1.2), float),
     (Optional('hI0', default=-2.0), float),
     (Optional('charge-precision', default=3), int),
-    (Optional('method', default='ewald'), Any("ewald", "nonperiodic")),
+    (Optional('method', default='ewald'), Any('ewald', 'nonperiodic')),
     (Optional('mr', default=2), int),
     (Optional('mk', default=2), int),
+    (Optional('eta', default=50), int),
     (Optional('eta', default=50), int),
 ])
 
 DEFAULT_CHARGE_FILE_NAME = 'chargecenters.dat'
 DEFAULT_IONIZATION_FILE_NAME = 'ionizationdata.dat'
-DEFAULT_OUTPUT_FILE_EXTENSIONS = ['json', 'cif']
+DEFAULT_OUTPUT_FILE_EXTENSIONS = ['cif']
 
 output_options = {
-    Optional('retrieve', default=DEFAULT_OUTPUT_FILE_EXTENSIONS):
-    [Any("car", "cif", "json", "mol", "pdb")]
+    Optional('retrieve', default=DEFAULT_OUTPUT_FILE_EXTENSIONS): [Any('car', 'cif', 'json', 'mol', 'pdb')]
 }
 
 options = dict(cmdline_options)
@@ -95,30 +94,27 @@ class EQeqParameters(Dict):
 
     def output_files_dict(self, structure_file_name):
         """Returns dictionary with names of output files to be retrieved.
-        
+
         Keys are the file extension, values are the full file name.
 
         :param structure_file_name: Name of input structure (cif format)
         """
         pm_dict = self.get_dict()
 
-        name = "{s}_EQeq_{m}_{la:.2f}_{h:.2f}".format(
+        name = '{s}_EQeq_{m}_{la:.2f}_{h:.2f}'.format(
             s=structure_file_name,
             m=pm_dict['method'],
             la=pm_dict['lambda'],
             h=pm_dict['hI0'],
         )
 
-        output_dict = {
-            ext: "{}.{}".format(name, ext)
-            for ext in pm_dict['retrieve']
-        }
+        output_dict = {ext: '{}.{}'.format(name, ext) for ext in pm_dict['retrieve']}
 
         return output_dict
 
     def output_files(self, structure_file_name):
         """Returns list of expected output files.
-        
+
         :param structure_file_name: Name of input structure (cif format)
         """
         return list(self.output_files_dict(structure_file_name).values())
