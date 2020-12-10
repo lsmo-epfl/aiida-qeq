@@ -5,7 +5,8 @@ max-line-length = 120
 disable = [
     "import-outside-toplevel",
     "duplicate-code",
-    "invalid-name"
+    "invalid-name",
+    "too-many-ancestors"
 ]
 
 

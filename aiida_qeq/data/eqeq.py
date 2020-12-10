@@ -7,9 +7,9 @@ Register data types via the "aiida.data" entry point in setup.json.
 
 # You can directly use or subclass aiida.orm.data.Data
 # or any other data type listed under 'verdi data'
+from collections import OrderedDict
 from aiida.orm import Dict
 from voluptuous import Schema, Optional, Any
-from collections import OrderedDict
 
 # key : [ accepted values, label ]
 cmdline_options = OrderedDict([
@@ -55,15 +55,15 @@ class EQeqParameters(Dict):
           For this reason, positional arguments are not allowed.
         """
         if 'dbnode' in kwargs:
-            super(EQeqParameters, self).__init__(**kwargs)
+            super().__init__(**kwargs)
         else:
             # validate dictionary
             dict = self.validate(dict)
-            super(EQeqParameters, self).__init__(dict=dict, **kwargs)
+            super().__init__(dict=dict, **kwargs)
 
     def validate(self, parameters_dict):
         """Validate command line options."""
-        return EQeqParameters._schema(parameters_dict)
+        return self._schema(parameters_dict)
 
     def cmdline_params(self,
                        structure_file_name,

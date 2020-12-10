@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from setuptools import setup, find_packages
+"""Setup script for aiida-qeq"""
 import json
+from setuptools import setup, find_packages
 
 if __name__ == '__main__':
     # Provide static information in setup.json
