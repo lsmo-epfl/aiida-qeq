@@ -31,7 +31,7 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install --upgrade pip
-        pip install -e .[testing,cp2k]
+        pip install -e .[testing]
         reentry scan -r aiida
 
     - name: Run test suite
@@ -44,7 +44,7 @@ jobs:
       if: github.repository == 'lsmo-epfl/aiida-qeq'
       uses: codecov/codecov-action@v1
       with:
-        name: aiida-ddec
+        name: aiida-qeq
         file: ./coverage.xml
         fail_ci_if_error: true
 

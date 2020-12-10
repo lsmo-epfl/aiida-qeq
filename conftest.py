@@ -40,7 +40,12 @@ def qeq_code(mock_code_factory):
         data_dir_abspath=DATA_DIR,
         entry_point='qeq.qeq',
         # files *not* to copy into the data directory
-        ignore_paths=('_aiidasubmit.sh',))
+        ignore_paths=(
+            '_aiidasubmit.sh',
+            'GMP.param',
+            'charges.xyz',
+            'configure.inpu',
+        ))
 
 
 @pytest.fixture(scope='function')
@@ -49,6 +54,6 @@ def eqeq_code(mock_code_factory):
     return mock_code_factory(
         label='eqeq-6490320',
         data_dir_abspath=DATA_DIR,
-        entry_point='qeq.rqeq',
+        entry_point='qeq.eqeq',
         # files *not* to copy into the data directory
-        ignore_paths=('_aiidasubmit.sh',))
+        ignore_paths=('_aiidasubmit.sh', '*.car', '*.mol', '*.pdb', 'chargecenters.dat', 'ionizationdata.dat'))
