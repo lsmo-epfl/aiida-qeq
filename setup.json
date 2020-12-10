@@ -3,7 +3,7 @@
     "author": "Leopold Talirz, Daniele Ongari",
     "author_email": "leopold.talirz@gmail.com",
     "description": "AiiDA plugin for computing electronic charges on atoms using equilibration-type models (QEq, EQEq, ...).",
-    "url": "https://github.com/ltalirz/aiida-qeq",
+    "url": "https://github.com/lsmo-epfl/aiida-qeq",
     "license": "MIT",
     "classifiers": [
         "Programming Language :: Python",

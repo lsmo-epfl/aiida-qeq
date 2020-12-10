@@ -1,13 +1,11 @@
-[![Build Status](https://travis-ci.org/ltalirz/aiida-qeq.svg?branch=master)](https://travis-ci.org/ltalirz/aiida-qeq)
-[![Coverage Status](https://coveralls.io/repos/github/ltalirz/aiida-qeq/badge.svg?branch=master)](https://coveralls.io/github/ltalirz/aiida-qeq?branch=master)
+[![Build Status](https://github.com/lsmo-epfl/aiida-qeq/workflows/ci/badge.svg)](https://github.com/lsmo-epfl/aiida-qeq/actions)
+[![Coverage Status](https://codecov.io/gh/lsmo-epfl/aiida-qeq/branch/develop/graph/badge.svg)](https://codecov.io/gh/lsmo-epfl/aiida-qeq)
 [![Docs status](https://readthedocs.org/projects/aiida-qeq/badge)](http://aiida-qeq.readthedocs.io/)
 [![PyPI version](https://badge.fury.io/py/aiida-qeq.svg)](https://badge.fury.io/py/aiida-qeq)
 
 # aiida-qeq
 
-AiiDA plugin for computing electronic charges on atoms using equilibration-type models (QEq, EQEq, ...).
-
-Templated using the [AiiDA plugin cutter](https://github.com/aiidateam/aiida-plugin-cutter).
+AiiDA plugin for computing electronic charges on atoms using equilibration-type models using the [Qeq method](https://github.com/danieleongari/egulp) and the [EQeq method](https://github.com/danieleongari/eqeq).
 
 ## Features
 
