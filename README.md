@@ -105,9 +105,11 @@ file in your repository that points to the required simulation codes:
 ---
 mock_code:
   # code-label: absolute path
-  egulp-fc4d7b7: /path/to/cp2k.sopt
-  eqeq-6490320: /path/to/Chargemol_09_02_2017_linux_serial
+  egulp-99d1159: /path/to/egulp
+  eqeq-6490320: /path/to/eqeq
 ```
+
+Note: `egulp-XXXXXXX` stands for [egulp](https://github.com/danieleongari/egulp) at commit `XXXXXXX` (analogous for eqeq). When switching to a newer code version, please consider regenerating the test data.
 
 ## License
 

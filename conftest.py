@@ -36,7 +36,7 @@ def qeq_parameters(aiida_profile):  # pylint: disable=unused-argument
 def qeq_code(mock_code_factory):
     """Create mocked "qeq" code."""
     return mock_code_factory(
-        label='egulp-fc4d7b7',
+        label='egulp-2d61ca9',
         data_dir_abspath=DATA_DIR,
         entry_point='qeq.qeq',
         # files *not* to copy into the data directory

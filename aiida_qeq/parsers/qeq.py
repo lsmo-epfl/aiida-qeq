@@ -4,10 +4,13 @@ Parsers provided by aiida_qeq for QEQ calculations.
 
 Register parsers via the "aiida.parsers" entry point in setup.json.
 """
+import os
 
 from aiida.parsers.parser import Parser
 from aiida.common import exceptions
 from aiida.plugins import CalculationFactory, DataFactory
+
+from aiida_qeq.data.qeq import LOG_FILE_NAME
 
 QeqCalculation = CalculationFactory('qeq.qeq')
 SinglefileData = DataFactory('singlefile')
@@ -37,8 +40,8 @@ class QeqParser(Parser):
             output_folder = self.retrieved
         except exceptions.NotExistent:
             return self.exit_codes.ERROR_NO_RETRIEVED_FOLDER
-        # Check the folder content is as expected
 
+        # Check the folder content is as expected
         list_of_files = output_folder.list_object_names()
 
         if 'configure' in self.node.inputs:
@@ -51,6 +54,21 @@ class QeqParser(Parser):
             pass
         else:
             self.logger.error('Not all expected output files {} were found'.format(output_files))
+
+        # Check code didn't segfault
+        with output_folder.open(self.node.get_option('scheduler_stderr'), 'r') as handle:
+            stderr = handle.read()
+        if 'Segmentation fault' in stderr:
+            return self.exit_codes.ERROR_SEGFAULT
+
+        # Check log file for error detection
+        retrieved_temporary_folder = kwargs.pop('retrieved_temporary_folder', None)
+        if retrieved_temporary_folder:
+            with open(os.path.join(retrieved_temporary_folder, LOG_FILE_NAME), 'r') as handle:
+                log = handle.read()
+            # Check that calculation converged
+            if 'SCF NOT CONVERGED' in log:
+                return self.exit_codes.ERROR_SCF_NOT_CONVERGED
 
         CifData = DataFactory('cif')  # pylint: disable=invalid-name
 

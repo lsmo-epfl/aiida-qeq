@@ -5,7 +5,7 @@
 import os
 import click
 from aiida.plugins import DataFactory, CalculationFactory
-from aiida.engine import run
+from aiida import engine
 from aiida import cmdline
 
 import aiida_qeq.data.eqeq as data
@@ -29,8 +29,9 @@ def run_eqeq_hkust1(eqeq_code):  # pylint: disable=
     builder.charge_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_CHARGE_FILE_NAME))
     builder.ionization_data = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_IONIZATION_FILE_NAME))
 
-    result = run(builder)
+    result, node = engine.run_get_node(builder)
 
+    assert node.is_finished_ok, result
     cif_content = result['structure_with_charges'].get_content()
     assert 'Cu' in cif_content
 
