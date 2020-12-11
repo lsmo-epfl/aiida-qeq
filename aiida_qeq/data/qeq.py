@@ -33,6 +33,7 @@ cmdline_options = OrderedDict([
 
 DEFAULT_PARAM_FILE_NAME = 'GMP.param'
 DEFAULT_CONFIGURE_FILE_NAME = 'configure.input'
+LOG_FILE_NAME = 'qeq.log'
 
 DEFAULT_OUTPUT_FILES = ['charges.cif']
 ALL_OUTPUT_FILES = ['charges.cif', 'charges.dat', 'charges.xyz', 'energy.dat']

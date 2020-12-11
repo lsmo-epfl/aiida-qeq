@@ -33,8 +33,9 @@
     "extras_require": {
         "testing": [
             "pgtest==1.2.0",
-            "pytest>=4.4,<5.0.0",
-            "pytest-cov>=2.6.1,<3.0.0",
+            "pytest~=6.1",
+            "pytest-cov~=2.10",
+            "PyCIFRW~=4.4",
             "aiida-testing @  git+https://github.com/ltalirz/aiida-testing@6b3c2ae023157e73563630aaf24d8337c348b74b#egg=aiida-testing"
         ],
         "pre-commit": [

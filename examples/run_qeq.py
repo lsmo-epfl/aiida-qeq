@@ -5,7 +5,7 @@
 import os
 import click
 from aiida.plugins import DataFactory, CalculationFactory
-from aiida.engine import run
+from aiida import engine
 from aiida import cmdline
 
 import aiida_qeq.data.qeq as data
@@ -18,7 +18,7 @@ SinglefileData = DataFactory('singlefile')
 Parameters = DataFactory('qeq.qeq')
 
 
-def run_qeq_hkust1(qeq_code):  # pylint: disable=
+def run_qeq_hkust1(qeq_code):
     """Run qeq calculation on HKUST-1
     """
 
@@ -29,9 +29,10 @@ def run_qeq_hkust1(qeq_code):  # pylint: disable=
     builder.structure = CifData(file=os.path.join(EXAMPLE_DIR, 'HKUST1.cif'))
     builder.parameters = SinglefileData(file=os.path.join(DATA_DIR, data.DEFAULT_PARAM_FILE_NAME))
 
-    result = run(builder)
-    print(result)
+    result, node = engine.run_get_node(builder)
 
+    assert node.is_finished_ok, result
+    print(result)
     cif_content = result['structure_with_charges'].get_content()
     assert 'Cu' in cif_content
 
