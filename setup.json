@@ -9,7 +9,7 @@
         "Programming Language :: Python",
         "Framework :: AiiDA"
     ],
-    "version": "1.0.0a1",
+    "version": "1.0.0",
     "entry_points": {
         "aiida.data": [
             "qeq.eqeq = aiida_qeq.data.eqeq:EQeqParameters",
